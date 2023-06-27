@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Usuário</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        .form-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+            width: 300px;
+        }
+        .form-container h2 {
+            text-align: center;
+            color: #333;
+        }
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+        }
+        .form-control[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+        .form-control[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        #message {
+            color: green;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Cadastro de Usuário</h2>
+        <form id="registerForm">
+            <input type="email" name="email" placeholder="E-mail" class="form-control" required>
+            <input type="password" name="password" placeholder="Senha" class="form-control" required>
+            <input type="submit" value="Cadastrar" class="form-control">
+        </form>
+        <p id="message"></p>
+    </div>
+
+    <script>
+        const form = document.getElementById('registerForm');
+        const message = document.getElementById('message');
+
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const email = form.elements.email.value;
+            const password = form.elements.password.value;
+
+            
+            localStorage.setItem('email', email);
+            localStorage.setItem('password', password);
+            
+            message.textContent = 'Cadastro bem-sucedido!';
+        });
+
+        document.getElementById('exportButton').addEventListener('click', function() {
+            // Get the clients data from localStorage
+            var clients = JSON.parse(localStorage.getItem('clients')) || [];
+
+            // Define the CSV content
+            var csv = 'Matricula,Nome,Telefone,Endereco,Rua,Numero,Bairro,Complemento,Cidade,Estado,Numero de Filhos,Renda Familiar\n';
+
+            // Loop through the clients data and add each client to the CSV
+            clients.forEach(function(client) {
+                csv += `${client.matricula},${client.nome},${client.fone},${client.endereco},${client.numero},${client.bairro},${client.complemento},${client.cidade},${client.estado},${client.numFilhos},${client.rendaFamiliar}\n`;
+            });
+
+            // Create a new Blob object using the CSV content
+            var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+
+            // Create a link element, set the href to the Blob object, and click the link
+            // This will download the CSV file
+            var url = URL.createObjectURL(blob);
+            var link = document.createElement('a');
+            link.setAttribute('href', url);
+            link.setAttribute('download', 'clientes.csv');
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+
+    </script>
+</body>
+</html>
